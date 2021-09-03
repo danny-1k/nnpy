@@ -7,8 +7,8 @@ class Linear(Layer):
         super().__init__()
         self.in_dims = in_
         self.out_dims = out_
-        self.params = {'w':np.random.randn(in_,out_)*np.sqrt(1/out_),
-                        'b':np.random.randn(1,out_)*np.sqrt(1/out_),
+        self.params = {'w':np.random.uniform(-np.sqrt(1/out_),np.sqrt(1/out_),(in_,out_)),
+                        'b':np.random.uniform(-np.sqrt(1/out_),np.sqrt(1/out_),(1,out_)),
         }
         self.grads = {'w':np.zeros_like(self.params['w']),'b':np.zeros_like(self.params['b'])}
     def forward(self,x):
