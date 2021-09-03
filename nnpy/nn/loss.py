@@ -31,7 +31,7 @@ class CrossEntropy(Loss):
         grad = pred-(np.eye(N)[targets])
         return grad
 
-class MSE:
+class MSE(Loss):
     '''
     MSE is the Mean Squared Error of the predictions
     It tells how close the predictions are to the targets
