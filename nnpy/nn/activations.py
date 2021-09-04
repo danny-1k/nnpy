@@ -40,7 +40,7 @@ class Sigmoid(Activation):
         x = np.clip(x,-500,500)
         self.grads['x'] = np.zeros_like(x)
         self.x = x
-        self.out = 1/(1+np.exp(x))
+        self.out = 1/(1+np.exp(-x))
         return self.out
 
     def grad_func(self,x):
