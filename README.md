@@ -55,6 +55,83 @@ for epoch in range(epochs):
 
 ```
 
+## Layers
+
+```python
+
+import nnpy.nn as nn
+
+num_inputs  = 2
+num_outs = 4
+linear_layer = nn.Linear(in_=num_inputs,out_=num_outs)
+
+seq_net = nn.Sequential([
+    nn.Linear(2,4),
+    nn.ReLU(),
+    nn.Linear(4,4),
+])
+
+```
+
+## Activation Layers
+
+Sigmoid, ReLU, Tanh, Softmax
+
+```python
+import nnpy.nn as nn
+import numpy as np
+
+sig_nonlin = nn.Sigmoid()
+tanh_nonlin = nn.Tanh()
+relu_nonlin = nn.ReLU()
+soft_nonlin = nn.Softmax()
+
+print(sig_nonlin(0))
+#0.5
+
+print(tanh_nonlin(np.array([1,2,3])))
+#[0.7616, 0.9640, 0.9951]
+
+print(relu_nonlin(np.array([-1,-2,3])))
+#[0, 0, 3]
+
+print(soft_nonlin(np.array([1,2,3])))
+#[0.0900, 0.2447, 0.6652]
+```
+
+## optimizers & lrschedulers
+
+```python
+import nnpy.nn as nn
+
+net = nn.Linear(2,2)
+
+optimizer = nn.optim.SGD(net,lr=1e-3)
+
+lrsched = nn.optim.lrschedulers.StepWiseDecay(optimizer)
+
+```
+
+## loss functions
+
+```python
+import nnpy.nn as nn
+import numpy as np
+
+x = np.array([[1,0],[0,2],[1,3]])
+y = np.array([[2,0],[2,2],[1,0]])
+
+net = nn.Linear(2,2)
+
+mseloss = nn.MSE(net)
+cross_entropy = nn.CrossEntropy(net)
+
+mseloss(x,y)
+#2.3333
+cross_entropy(x,y.argmax(axis=1))
+#6.1402
+```
+
 ## Customization
 You can create custom functions and Layers by inheriting from `nnpy.core.base.<Class>`
 ### Example
