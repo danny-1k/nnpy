@@ -169,8 +169,8 @@ class SuperFancyLayer(base.Layer):
 
     def backward(self,grad):
         #this function calculates the grads of
-        #its parameters and returns a 
-        #gradient for the next layer to backward
+        #its parameters and returns the
+        #gradients for the next layer
         self.grads['superfancygrad'] = grad*2*self.x
         return self.grads['superfancygrad']
 
