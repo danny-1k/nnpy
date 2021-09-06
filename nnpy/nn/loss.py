@@ -41,11 +41,11 @@ class MSE(Loss):
 
     def forward(self,pred,targets):
         '''
-        Calculates (1/2N)*(pred-targets)**2
+        Calculates (1/N)*(pred-targets)**2
         '''
         self.pred = pred
         self.targets = targets
-        self.out = (1/2*pred.shape[0])*sum((pred-targets)**2)
+        self.out = (1/(pred.shape[0]*pred.shape[1]))*np.sum((pred-targets)**2)
         return self.out
 
     def grad_func(self,pred,targets):
