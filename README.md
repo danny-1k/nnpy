@@ -137,7 +137,7 @@ You can create custom functions and Layers by inheriting from `nnpy.core.base.<C
 ### Example
 ```python
 import nnpy.core.base as base
-impor numpy as np
+import numpy as np
 
 class CustomActivationFunc(base.Activation):
     def forward(self,x):
