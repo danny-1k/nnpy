@@ -188,3 +188,4 @@ To test the model on numbers drawn by me(Bad handwriting lol) run `python mnist/
 - [ ] Adam optimizer
 - [ ] CNN
 - [ ] RNN
+- [ ] LSTM
