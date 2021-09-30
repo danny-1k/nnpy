@@ -16,6 +16,8 @@ class CrossEntropy(Loss):
         '''
         Calculates nl(pred[target])
         '''
+        #pred should be of shape (batch_size,num_classes)
+        #targets should be of shape (batch_size)
         N = pred.shape[0]
         self.pred = pred
         self.targets = targets
