@@ -34,7 +34,6 @@ class CrossEntropy(Loss):
 class MSE(Loss):
     '''
     MSE is the Mean Squared Error of the predictions
-    It tells how close the predictions are to the targets
     '''
     def __init__(self,net):
         super().__init__(net)
@@ -53,3 +52,25 @@ class MSE(Loss):
         Returns the grad of the pred; 2*(pred-targets)
         '''
         return 2*(pred-targets)
+
+class MAE(Loss):
+    '''
+    MAE is the Mean Absolute Error of the predictions
+    '''
+    def __init__(self,net):
+        super().__init__(net)
+
+    def forward(self,pred,targets):
+        '''
+        Calculates (1/N)*abs(pred-targets)
+        '''
+        self.pred = pred
+        self.targets = targets
+        self.out = (1/(pred.shape[0]*pred.shape[1]))*np.sum(abs(pred-targets))
+        return self.out
+
+    def grad_func(self,pred,targets):
+        '''
+        Returns the grad of the pred; (pred-targets)>0
+        '''
+        return ((pred-targets) > 0) + 0
