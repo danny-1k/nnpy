@@ -184,6 +184,49 @@ To train the model, run `python mnist/train.py`
 
 To test the model on numbers drawn by me(Bad handwriting lol) run `python mnist/test.py` to test 
 
+
+## nnpy
+- core
+- nn
+- optim
+
+## nnpy.core
+- base
+
+## nnpy.nn:
+- activations
+- layers
+- loss
+
+## nnpy.optim:
+- lrschedulers
+- optim
+
+## nnpy.nn.activations:
+- ReLU
+- Sigmoid
+- Tanh
+- Softmax
+
+## nnpy.nn.layers:
+- Linear
+- Dropout
+- Sequential
+- TimeDistributed
+
+## nnpy.nn.loss:
+- CrossEntropy
+- MSE
+- MAE
+
+## nnpy.optim.lrschedulers
+- StepWiseDecay
+- ReduceOnPlateau
+
+## nnpy.optim.optim
+- SGD
+- Adagrad
+
 ## TODO
 - [ ] Adam optimizer
 - [ ] CNN
