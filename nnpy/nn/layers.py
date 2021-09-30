@@ -88,3 +88,45 @@ class Sequential(Layer):
         for layer in self.layers:
             if isinstance(layer,Function):
                 layer.eval = False
+
+class TimeDistributed(Layer):
+    def __init__(self, layer):
+        self.layer = layer
+        self.grads = layer.grads
+        self.params = layer.params if 'params' in dir(layer) else None
+
+    def forward(self, x):
+        self.params = self.layer.params if 'params' in dir(
+            self.layer) else None
+        # x is expected to be of shape (batch_size,seq_len,in_dims)
+        self.x = x
+        self.out = []
+        time_steps = x.shape[1]
+        for t in range(time_steps):
+            p = self.layer(self.x[:, t, :])
+            self.out.append(p)
+        # out is now of shape (seq_len,batch_size,in_dims)
+        # should be (batch_size,seq_len,in_dims)
+        self.out = np.array(self.out).transpose(1, 0, 2)
+        return self.out
+
+    def backward(self, grad):
+        self.params = self.layer.params if 'params' in dir(
+            self.layer) else None
+        # grad is expected to be of shape (batch_size,seq_len,in_dims)
+        time_steps = self.x.shape[1]
+        next_grad = np.zeros_like(self.x)
+
+        for t in reversed(range(time_steps)):
+            x = self.x[:, t, :]
+            self.layer.x = x
+            next_grad[:,t,:] = self.layer.backward(grad[:, t, :])
+        
+        self.grads = {item:self.layer.grads[item] for item in self.layer.grads}
+        return next_grad
+
+    def step(self, lr):
+        self.layer.step(lr)
+
+    def __repr__(self):
+        return f'TimeDistributedLayer({self.layer})'
