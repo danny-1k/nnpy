@@ -42,10 +42,12 @@ def numerical_grad(func,x):
     return grad_vec
 
 
-
 def compare(num_grads,grads):
-    diff = abs(num_grads-grads) < 1e-8
-    if np.sum(diff) == diff.size:
+    diff = abs(num_grads-grads)
+    bools = diff < 1e-8
+    if np.sum(bools) == bools.size:
         print('The derivated gradients are correct')
     else:
         print('The derivated gradients are wrong.')
+    return diff
+
