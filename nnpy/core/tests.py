@@ -21,7 +21,7 @@ def numerical_grad(func,x):
     #for example (2,3,3) matrix
     #then we need to compute the gradient one at a time
 
-    if x.shape > 2:
+    if len(x.shape) > 2:
         for xi in x:
             f_x_plus_h = func(xi+h)
             f_x_min_h = func(xi-h)
