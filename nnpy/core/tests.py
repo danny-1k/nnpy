@@ -13,7 +13,7 @@ def numerical_grad(func,x):
 
     '''
 
-    h = 1e-8
+    h = 1e-7
 
     grad_vec = []
 
@@ -44,9 +44,8 @@ def numerical_grad(func,x):
 
 
 def compare(num_grads,grads):
-    diff = abs(num_grads-grads) < 1e-8 
-
+    diff = abs(num_grads-grads) < 1e-8
     if np.sum(diff) == diff.size:
         print('The derivated gradients are correct')
     else:
-        print('The derivated gradients are wrong')
+        print('The derivated gradients are wrong.')
