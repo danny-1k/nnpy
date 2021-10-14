@@ -51,3 +51,26 @@ def compare(num_grads,grads):
         print('The derivated gradients are wrong.')
     return diff
 
+
+def check_grads_layer(layer,x,deriv_grads):
+    '''
+    Checks the grads of the params of layers
+    '''
+    h = 1e-7
+    for param in layer.params:
+        orig_param = layer.params[param]
+        #layer.params[param] = orig_param+h
+        #f_x_plus_h = layer(x)
+
+        #layer.params[param] = orig_param-h
+        #f_x_min_h = layer(x)
+
+        #layer.params[param] = orig_param
+
+        #g = (f_x_plus_h-f_x_min_h)/(2*h)
+        g = ((orig_param+h)-(orig_param-h))/(2*h)
+        print(g-deriv_grads[param])
+        if np.sum(abs(g-deriv_grads[param]) < 1e-7) == g.size:
+            print(f'{param} grads -> Correct')
+        else:
+            print(f'{param} grads -> Wrong')
