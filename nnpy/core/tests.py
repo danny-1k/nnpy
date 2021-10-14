@@ -21,22 +21,10 @@ def numerical_grad(func,x):
     #for example (2,3,3) matrix
     #then we need to compute the gradient one at a time
 
-    if len(x.shape) > 2:
-        for xi in x:
-            f_x_plus_h = func(xi+h)
-            f_x_min_h = func(xi-h)
+    f_x_plus_h = func(x+h)
+    f_x_min_h = func(x-h)
 
-            g = (f_x_plus_h-f_x_min_h)/(2*h)
-
-            grad_vec.append(g)
-
-        grad_vec =  np.array(grad_vec).T
-
-    else:
-        f_x_plus_h = func(x+h)
-        f_x_min_h = func(x-h)
-
-        grad_vec = (f_x_plus_h-f_x_min_h)/(2*h)
+    grad_vec = (f_x_plus_h-f_x_min_h)/(2*h)
 
     
     return grad_vec
@@ -69,7 +57,6 @@ def check_grads_layer(layer,x,deriv_grads):
 
         #g = (f_x_plus_h-f_x_min_h)/(2*h)
         g = ((orig_param+h)-(orig_param-h))/(2*h)
-        print(g-deriv_grads[param])
         if np.sum(abs(g-deriv_grads[param]) < 1e-7) == g.size:
             print(f'{param} grads -> Correct')
         else:
