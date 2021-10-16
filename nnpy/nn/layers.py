@@ -1,5 +1,6 @@
 import numpy as np
 from ..core.base import Layer,Function
+from ..core.utils import create_graph
 from .activations import Tanh,Softmax
 
 class Linear(Layer):
@@ -73,6 +74,8 @@ class Sequential(Layer):
             if not isinstance(layer,Function):
                 grad = layer.backward(grad)
 
+        return grad
+
     def eval(self):
         '''
         Sets the network in eval mode
@@ -88,6 +91,87 @@ class Sequential(Layer):
         for layer in self.layers:
             if isinstance(layer,Function):
                 layer.eval = False
+
+class Module(Layer):
+
+
+    def forward(self,*args,**kwargs):
+        pass
+
+    def backward(self, grad):
+        if 'layers' not in dir(self):
+            pass
+
+        for layer in self.layers[::-1]:
+            if not isinstance(layer,Function):
+                grad = layer.backward(grad)
+
+        
+        return grad
+
+
+    def zero_grad(self):
+        '''
+        Zeros the grads of all layers in the net
+        if the layer isn't a Function
+        '''
+        
+        if 'layers' not in dir(self):
+            pass
+
+        for layer in self.layers:
+            if not isinstance(layer,Function):
+                layer.zero_grad()
+
+
+    def eval(self):
+        '''
+        Sets the network in eval mode
+        '''
+
+        if 'layers' not in dir(self):
+            pass
+
+        for layer in self.layers:
+            if isinstance(layer,Function):
+                layer.eval = True
+
+
+    def train(self):
+        '''
+        Sets the network in train mode
+        '''
+
+        if 'layers' not in dir(self):
+            pass
+
+
+        for layer in self.layers:
+            if isinstance(layer,Function):
+                layer.eval = False
+
+
+    def __call__(self, *args,**kwargs):
+        self.out = self.forward(*args,**kwargs)
+
+        if 'layers' not in dir(self):
+            x = [*args]
+            layers = []
+            
+            for item in dir(self):
+                if isinstance(self.__getattribute__(item),Layer) or isinstance(self.__getattribute__(item),Function):
+                    layers.append(self.__getattribute__(item))
+
+
+            for xi in x:
+                graph = create_graph(xi,layers)
+                if len(graph) >0:
+                    layers = graph
+
+            self.layers = layers
+
+        return self.out
+
 
 class TimeDistributed(Layer):
     def __init__(self, layer):
