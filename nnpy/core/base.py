@@ -114,6 +114,8 @@ class Optim:
         Calls .zero_grad() on all the layers of the network
         if the layer is not a function
         '''
+        if 'layers' not in dir(self.net):
+            return
         for layer in self.net.layers:
             if not isinstance(layer,Function):
                 layer.zero_grad()
