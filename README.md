@@ -192,6 +192,7 @@ To test the model on numbers drawn by me(Bad handwriting lol) run `python mnist/
 
 ## nnpy.core
 - base
+- tests
 
 ## nnpy.nn:
 - activations
