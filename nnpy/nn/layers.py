@@ -115,9 +115,8 @@ class Module(Layer):
         Zeros the grads of all layers in the net
         if the layer isn't a Function
         '''
-        
         if 'layers' not in dir(self):
-            pass
+            return
 
         for layer in self.layers:
             if not isinstance(layer,Function):
@@ -130,7 +129,7 @@ class Module(Layer):
         '''
 
         if 'layers' not in dir(self):
-            pass
+            return
 
         for layer in self.layers:
             if isinstance(layer,Function):
@@ -143,7 +142,7 @@ class Module(Layer):
         '''
 
         if 'layers' not in dir(self):
-            pass
+            return
 
 
         for layer in self.layers:
