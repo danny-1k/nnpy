@@ -182,22 +182,28 @@ class TimeDistributed(Layer):
     def forward(self, x):
         self.params = self.layer.params if 'params' in dir(
             self.layer) else None
+
         # x is expected to be of shape (batch_size,seq_len,in_dims)
+
         self.x = x
         self.out = []
         time_steps = x.shape[1]
         for t in range(time_steps):
             p = self.layer(self.x[:, t, :])
             self.out.append(p)
+
         # out is now of shape (seq_len,batch_size,in_dims)
         # should be (batch_size,seq_len,in_dims)
+
         self.out = np.array(self.out).transpose(1, 0, 2)
         return self.out
 
     def backward(self, grad):
         self.params = self.layer.params if 'params' in dir(
             self.layer) else None
+
         # grad is expected to be of shape (batch_size,seq_len,in_dims)
+
         time_steps = self.x.shape[1]
         next_grad = np.zeros_like(self.x)
 
@@ -215,10 +221,11 @@ class TimeDistributed(Layer):
     def __repr__(self):
         return f'TimeDistributedLayer({self.layer})'
 
-        
+
 
 class RNN(Layer):
     def __init__(self, in_dims, hidden_dims, return_sequences=False, activation=Tanh()):
+        
         self.in_dims = in_dims
         self.hidden_dims = hidden_dims
         self.activation = activation
@@ -229,6 +236,7 @@ class RNN(Layer):
             'bhh': np.random.uniform(-np.sqrt(1/hidden_dims),np.sqrt(1/hidden_dims),(1,hidden_dims)),
             
         }
+
         self.grads = {
             'wxh': np.zeros_like(self.params['wxh']),
             'whh': np.zeros_like(self.params['whh']),
@@ -237,7 +245,9 @@ class RNN(Layer):
 
     def forward(self, x, hidden=None):
         # x is expected to be of shape (batch_size,seq_length,in_dims)
+        
         assert x.shape[-1] == self.in_dims, f'Expected x to be of shape (batch_size,seq_len,{x.shape[-1]})'
+        
         if isinstance(hidden, np.ndarray):
             assert hidden.shape == (x.shape[0], self.hidden_dims)
             self.hidden = hidden
@@ -249,6 +259,7 @@ class RNN(Layer):
 
         if self.return_sequences:
             self.out = []
+
         else:
             self.out = None
 
@@ -261,6 +272,7 @@ class RNN(Layer):
             )
 
             self.hidden = np.copy(self.hs[t])
+
             if self.return_sequences:
                 self.out.append(self.hs[t])
             else:
@@ -269,6 +281,7 @@ class RNN(Layer):
             # if self.return_sequences is set to True
             # self.out is of shape (seq_len,batch_size,hidden_dims)
             # it should of shape (batch_size,seq_len,hidden_dims)
+
         if self.return_sequences:
             self.out = np.array(self.out).transpose(1, 0, 2)
 
@@ -284,9 +297,10 @@ class RNN(Layer):
                 f'Expected grad to be of shape (batch_size,{time_steps},{self.hidden_dims}) but got {grad.shape} instead.'
 
             next_grads = np.zeros_like(self.x)
+
             dhnext = np.zeros_like(self.hs[0])
+
             for t in list(reversed(range(time_steps))):
-                #h[t] = tanh(x[t]@w + h[t]@v)
 
                 dh = (grad[:, t, :] + dhnext)
                 dh_raw = dh * self.activation.grad_func(self.hs[t])  # (batch_size,hidden_size)
@@ -327,6 +341,11 @@ class RNN(Layer):
                 #dh (b,hidden)
                 grad = dh @ self.params['whh'].T
                 next_grads[:,t,:] += dh @ self.params['wxh'].T
+
+            for grad_ in self.grads:
+                # clip to mitigate exploding / vanishing gradients
+                #if  
+                self.grads[grad_] = self.grads[grad_]/np.linalg.norm(self.grads[grad_])
 
 
             return next_grads
