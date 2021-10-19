@@ -214,3 +214,123 @@ class TimeDistributed(Layer):
 
     def __repr__(self):
         return f'TimeDistributedLayer({self.layer})'
+
+        
+
+class RNN(Layer):
+    def __init__(self, in_dims, hidden_dims, return_sequences=False, activation=Tanh()):
+        self.in_dims = in_dims
+        self.hidden_dims = hidden_dims
+        self.activation = activation
+        self.return_sequences = return_sequences
+        self.params = {
+            'wxh': np.random.uniform(-np.sqrt(1/hidden_dims),np.sqrt(1/hidden_dims),(in_dims,hidden_dims)),
+            'whh': np.random.uniform(-np.sqrt(1/hidden_dims),np.sqrt(1/hidden_dims),(hidden_dims,hidden_dims)),
+            'bhh': np.random.uniform(-np.sqrt(1/hidden_dims),np.sqrt(1/hidden_dims),(1,hidden_dims)),
+            
+        }
+        self.grads = {
+            'wxh': np.zeros_like(self.params['wxh']),
+            'whh': np.zeros_like(self.params['whh']),
+            'bhh': np.zeros_like(self.params['bhh']),
+        }
+
+    def forward(self, x, hidden=None):
+        # x is expected to be of shape (batch_size,seq_length,in_dims)
+        assert x.shape[-1] == self.in_dims, f'Expected x to be of shape (batch_size,seq_len,{x.shape[-1]})'
+        if isinstance(hidden, np.ndarray):
+            assert hidden.shape == (x.shape[0], self.hidden_dims)
+            self.hidden = hidden
+        else:
+            self.hidden = np.zeros((x.shape[0], self.hidden_dims))
+
+        self.x = x
+        self.hs = {-1: np.copy(self.hidden)}
+
+        if self.return_sequences:
+            self.out = []
+        else:
+            self.out = None
+
+        time_steps = x.shape[1]
+
+        for t in range(time_steps):
+            self.hs[t] = self.activation(
+                self.x[:, t, :] @ self.params['wxh'] +
+                self.hidden @ self.params['whh'] + self.params['bhh']
+            )
+
+            self.hidden = np.copy(self.hs[t])
+            if self.return_sequences:
+                self.out.append(self.hs[t])
+            else:
+                self.out = self.hidden
+
+            # if self.return_sequences is set to True
+            # self.out is of shape (seq_len,batch_size,hidden_dims)
+            # it should of shape (batch_size,seq_len,hidden_dims)
+        if self.return_sequences:
+            self.out = np.array(self.out).transpose(1, 0, 2)
+
+        return self.out
+
+    def backward(self, grad):
+        # Backpropagation Through Time
+        time_steps = self.x.shape[1]
+
+        if self.return_sequences == True:
+            # grad is to be of shape (batch_size,seq_len,hidden_dims)
+            assert grad.shape[-2:] == (time_steps, self.hidden_dims),\
+                f'Expected grad to be of shape (batch_size,{time_steps},{self.hidden_dims}) but got {grad.shape} instead.'
+
+            next_grads = np.zeros_like(self.x)
+            dhnext = np.zeros_like(self.hs[0])
+            for t in list(reversed(range(time_steps))):
+                #h[t] = tanh(x[t]@w + h[t]@v)
+
+                dh = (grad[:, t, :] + dhnext)
+                dh_raw = dh * self.activation.grad_func(self.hs[t])  # (batch_size,hidden_size)
+
+                # wxh (in,hidden)
+                #whh (hidden,hidden)
+                #bhh (1,hidden)
+                #dhidden (batch_size,hidden)
+                # x (batch_size,in)
+                self.grads['wxh'] += self.x[:, t, :].T @ dh_raw
+                self.grads['whh'] += self.hs[t-1].T @ dh_raw
+                self.grads['bhh'] += dh_raw.sum(axis=0)
+                dhnext = dh_raw @ self.params['whh'].T # (b,h) @ (h,h)
+                next_grads[:, t, :] += dh_raw @ self.params['wxh'].T
+
+            for grad_ in self.grads:
+                # clip to mitigate exploding / vanishing gradients
+                #if  
+                self.grads[grad_] = self.grads[grad_]/np.linalg.norm(self.grads[grad_])
+
+            #print(self.grads['whh'])
+            return next_grads
+
+        else:
+            # grad is to be of shape (batch_size,hidden_dims)
+            assert grad.shape[-1] == self.hidden_dims,\
+                f'Expected grad to be of shape (batch_size,{self.hidden_dims}) but got {grad.shape} instead.'
+
+            next_grads = np.zeros_like(self.x)
+
+            for t in list(reversed(range(time_steps))):
+                dh = grad * self.activation.grad_func(self.hs[t])
+                self.grads['wxh'] += self.x[:, t, :].T @ dh
+                self.grads['whh'] += self.hs[t-1].T @ dh
+                self.grads['bhh'] += dh.sum(axis=0)
+
+                #whh (hidden,hidden)
+                #dh (b,hidden)
+                grad = dh @ self.params['whh'].T
+                next_grads[:,t,:] += dh @ self.params['wxh'].T
+
+
+            return next_grads
+            
+    def step(self, lr):
+        for item in self.grads:
+            self.params[item] -= lr*self.grads[item]
