@@ -79,17 +79,41 @@ def numerical_grad_layer(layer,lossfn,x,y,param_name,layer_num=None):
 
     '''
 
-    if layer_num:
+    h = 1e-7
+
+
+    if layer_num != None:
         try:
-            layer = layer.layers[layer_num]
+            #net = layer
+            #layer = layer.layers[layer_num]
+            orig_param = layer.layers[layer_num].params[param_name].copy()
+            h_vec = np.zeros(np.prod(orig_param.shape))
+            n_grad = np.zeros_like(h_vec)
+
+            for idx in range(np.prod(orig_param.shape)):
+                h_vec[idx] = h
+
+                layer.layers[layer_num].params[param_name] = orig_param + h_vec.reshape(orig_param.shape)
+                l1 = lossfn(layer(x),y)
+
+                layer.layers[layer_num].params[param_name] = orig_param - h_vec.reshape(orig_param.shape)
+                l2 = lossfn(layer(x),y)
+
+                n_grad[idx] = (l1-l2)/(2*h)
+
+                h_vec[idx] = 0
+
+            n_grad = n_grad.reshape(orig_param.shape)
+
+            return n_grad
+            
         except:
-            pass
+            print(f'Could not calculate grads for layer : {layer} and param : {param_name}')
 
     orig_param = layer.params[param_name].copy()
     h_vec = np.zeros(np.prod(orig_param.shape))
     n_grad = np.zeros_like(h_vec)
 
-    h = 1e-7
 
     for idx in range(np.prod(orig_param.shape)):
         h_vec[idx] = h
