@@ -35,9 +35,9 @@ for epoch in range(epochs):
     loss_b = []
     for xb,yb in zip(X,Y):
         optimizer.zero_grad()
-        xb = np.array([xb])
+        xb = np.array(np.array([xb]))
         pred = net(xb)
-        loss = loss_fn(pred,np.array([yb]))
+        loss = loss_fn(pred,np.array(np.array([yb])))
         loss_b.append(loss)
         loss_fn.backward()
         optimizer.step()
