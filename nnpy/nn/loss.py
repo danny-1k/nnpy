@@ -42,7 +42,7 @@ class CrossEntropy(Loss):
         pred = pred.reshape(-1,p_shape[-1])
         targets = targets.reshape(-1)
 
-        grad = (pred-(np.eye(N)[targets]))*(1/N)
+        grad = (pred-(np.eye(N)[targets]))
         grad = grad.reshape(p_shape)
         return grad
 
