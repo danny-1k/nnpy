@@ -316,11 +316,6 @@ class RNN(Layer):
                 dhnext = dh_raw @ self.params['whh'].T # (b,h) @ (h,h)
                 next_grads[:, t, :] += dh_raw @ self.params['wxh'].T
 
-            for grad_ in self.grads:
-                # clip to mitigate exploding / vanishing gradients
-                #if  
-                self.grads[grad_] = self.grads[grad_]/np.linalg.norm(self.grads[grad_])
-
             #print(self.grads['whh'])
             return next_grads
 
@@ -341,12 +336,6 @@ class RNN(Layer):
                 #dh (b,hidden)
                 grad = dh @ self.params['whh'].T
                 next_grads[:,t,:] += dh @ self.params['wxh'].T
-
-            for grad_ in self.grads:
-                # clip to mitigate exploding / vanishing gradients
-                #if  
-                self.grads[grad_] = self.grads[grad_]/np.linalg.norm(self.grads[grad_])
-
 
             return next_grads
             
