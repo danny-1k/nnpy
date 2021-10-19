@@ -19,15 +19,12 @@ class CrossEntropy(Loss):
         #pred should be of shape (batch_size,num_classes)
         #targets should be of shape (batch_size)
 
-        pred = pred.reshape(-1,pred.shape[-1])
-        targets = targets.reshape(-1)
-
         N = pred.shape[0]
 
         self.pred = pred
         self.targets = targets
         #adding 1e-8 to prevent taking the log of 0!
-        self.out = np.sum(-np.log(pred[range(N),targets]+1e-8))*(1/N)
+        self.out = np.sum(-np.log(pred.reshape(-1,pred.shape[-1])[range(N),targets.reshape(-1)]+1e-8))*(1/N)
         return self.out
 
     def grad_func(self,pred,targets):
@@ -36,14 +33,17 @@ class CrossEntropy(Loss):
         '''
 
         p_shape = pred.shape
-
-        N = pred.shape[1] 
+        
 
         pred = pred.reshape(-1,p_shape[-1])
         targets = targets.reshape(-1)
 
+        N = pred.shape[-1] 
+
+        
         grad = (pred-(np.eye(N)[targets]))
         grad = grad.reshape(p_shape)
+        
         return grad
 
 class MSE(Loss):
