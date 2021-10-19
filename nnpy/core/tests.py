@@ -39,7 +39,7 @@ def compare(num_grads,grads):
         print('The derivated gradients are wrong.')
     return diff
 
-def numerical_grad_layer(layer,lossfn,x,y,param_name):
+def numerical_grad_layer(layer,lossfn,x,y,param_name,layer_num=None):
     '''
     Function to calculate gradients
     of a layer with respect to a parameter numerically
@@ -78,6 +78,13 @@ def numerical_grad_layer(layer,lossfn,x,y,param_name):
     which is pretty close to [1,1,1]
 
     '''
+
+    if layer_num:
+        try:
+            layer = layer.layers[layer_num]
+        except:
+            pass
+
     orig_param = layer.params[param_name].copy()
     h_vec = np.zeros(np.prod(orig_param.shape))
     n_grad = np.zeros_like(h_vec)
