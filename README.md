@@ -245,6 +245,7 @@ To test the model on numbers drawn by me(Bad handwriting lol) run `python mnist/
 - Sequential
 - TimeDistributed
 - Module
+- RNN
 
 ## nnpy.nn.loss:
 - CrossEntropy
