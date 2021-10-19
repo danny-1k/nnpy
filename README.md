@@ -132,6 +132,36 @@ cross_entropy(x,y.argmax(axis=1))
 #6.1402
 ```
 
+## Fuck sequential
+
+pytorch like module definition with the `Module` class
+### Example
+
+```python
+import nnpy
+import nnpy.nn as nn
+
+class Net(nn.Module):
+    def __init__(self):
+        self.fc1 = nn.Linear(3,4)
+        self.fc2 = nn.Linear(4,4)
+        self.fc3 = nn.Linear(4,1)
+        self.relu1 = nn.ReLU(),
+        self.relu2 = nn.ReLU()
+        self.sig = nn.ReLU()
+
+
+
+    def forward(self,x):
+        x = self.fc1(x)
+        x = self.relu1(x)
+        x = self.fc2(x)
+        x = self.relu2(x)
+        x = self.fc3(x)
+        x = self.sig(x)
+
+```
+
 ## Customization
 You can create custom functions and Layers by inheriting from `nnpy.core.base.<Class>`
 ### Example
@@ -214,6 +244,7 @@ To test the model on numbers drawn by me(Bad handwriting lol) run `python mnist/
 - Dropout
 - Sequential
 - TimeDistributed
+- Module
 
 ## nnpy.nn.loss:
 - CrossEntropy
