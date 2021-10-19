@@ -212,7 +212,7 @@ class SuperFancyLayer(base.Layer):
 To train the model, run `python mnist/train.py`
 
 
-To test the model on numbers drawn by me(Bad handwriting lol) run `python mnist/test.py` to test 
+To test the model,  run `python mnist/test.py` 
 
 
 ## nnpy
