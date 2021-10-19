@@ -103,10 +103,11 @@ class Module(Layer):
             pass
 
         for layer in self.layers[::-1]:
+
             if not isinstance(layer,Function):
                 grad = layer.backward(grad)
 
-        
+
         return grad
 
 
