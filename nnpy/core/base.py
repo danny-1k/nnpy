@@ -8,7 +8,7 @@ class Layer:
         self.out = None
         self.grads = {}
         self.x = None
-    def forward(self,x):
+    def forward(self,*args,**kwargs):
         '''
         Forward method to push inputs through a computation
         and then forward through the rest of the network
@@ -22,8 +22,10 @@ class Layer:
         '''
         pass
 
-    def __call__(self,*args):
-        return self.forward(*args)
+    def __call__(self,*args,**kwargs):
+        self.args = args
+        self.kwargs = kwargs
+        return self.forward(*args,**kwargs)
 
     def __repr__(self):
         return f'{type(self).__name__}()'
@@ -57,8 +59,8 @@ class Function:
         '''
         pass
 
-    def __call__(self,*args):
-        return self.forward(*args)
+    def __call__(self,*args,**kwargs):
+        return self.forward(*args,**kwargs)
 
     def __repr__(self):
         return f'{type(self).__name__}()'
