@@ -53,7 +53,7 @@ class MSE(Loss):
         '''
         Returns the grad of the pred; 2*(pred-targets)
         '''
-        return 2*(pred-targets)
+        return (1/(pred.shape[0]*pred.shape[1]))*(2*(pred-targets))
 
 class MAE(Loss):
     '''
@@ -75,4 +75,4 @@ class MAE(Loss):
         '''
         Returns the grad of the pred; (pred-targets)>0
         '''
-        return ((pred-targets) > 0) + 0
+        return (pred-targets) > 0
