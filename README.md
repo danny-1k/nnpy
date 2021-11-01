@@ -241,11 +241,12 @@ To test the model,  run `python mnist/test.py`
 
 ## nnpy.nn.layers:
 - Linear
+- RNN
 - Dropout
 - Sequential
 - TimeDistributed
 - Module
-- RNN
+- Reshape
 
 ## nnpy.nn.loss:
 - CrossEntropy
@@ -263,5 +264,4 @@ To test the model,  run `python mnist/test.py`
 ## TODO
 - [ ] Adam optimizer
 - [ ] CNN
-- [ ] RNN
 - [ ] LSTM
