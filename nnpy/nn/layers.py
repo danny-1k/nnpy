@@ -342,3 +342,20 @@ class RNN(Layer):
     def step(self, lr):
         for item in self.grads:
             self.params[item] -= lr*self.grads[item]
+
+
+class Reshape(Layer):
+    def __init__(self,target_shape,input_shape):
+        self.params = {}
+        self.grads = {}
+        
+        self.target_shape = target_shape
+        self.input_shape = input_shape
+
+    def forward(self, x):
+        assert x.shape[-len(self.input_shape):] == self.input_shape,f'Expected input to be of shape {self.input_shape}, got {x.shape} instead'
+
+        return x.reshape((-1,*self.target_shape))
+
+    def backward(self, grad):
+        return grad.reshape((-1,*self.input_shape))
