@@ -285,7 +285,7 @@ class RNN(Layer):
         if self.return_sequences:
             self.out = np.array(self.out).transpose(1, 0, 2)
 
-        return self.out
+        return self.out,self.hidden
 
     def backward(self, grad):
         # Backpropagation Through Time
