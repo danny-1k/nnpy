@@ -353,9 +353,9 @@ class Reshape(Layer):
         self.input_shape = input_shape
 
     def forward(self, x):
-        assert x.shape[-len(self.input_shape):] == self.input_shape,f'Expected input to be of shape {self.input_shape}, got {x.shape} instead'
+        assert x.shape == self.input_shape,f'Expected input to be of shape {self.input_shape}, got {x.shape} instead'
 
-        return x.reshape((-1,*self.target_shape))
+        return x.reshape(self.target_shape)
 
     def backward(self, grad):
-        return grad.reshape((-1,*self.input_shape))
+        return grad.reshape(self.input_shape)
