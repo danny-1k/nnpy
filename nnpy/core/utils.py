@@ -108,7 +108,7 @@ def cross_correlation2d(x,kernel,stride=(1,1),padding=0):
                 :,i+(i*(stride[0]-1)):kernel_size[0]+i+(i*(stride[0]-1)),\
                     j+(j*(stride[1]-1)):kernel_size[1]+j+(j*(stride[1]-1))
                 ]
-
+            
             out[:,i,j] = (patch*kernel).sum(axis=(1,2))
     
     return out
