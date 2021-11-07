@@ -24,8 +24,9 @@ def create_graph(x,layers):
             else:
                 break
         except:
+            
             break
-        
+
     return g
 
 
