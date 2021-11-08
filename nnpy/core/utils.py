@@ -81,7 +81,7 @@ def gen_patches(x,kernel_size,stride=(1,1),padding=0):
 
 
 
-def cross_correlation2d(x,kernel,stride=(1,1),padding=0):
+def correlation2d(x,kernel,stride=(1,1),padding=0):
     #x should be of shape (batch_size,height,width)
     assert len(x.shape) == 3, f"Expected input to be of shape (batch_size,height,width). Got {x.shape} instead"
     assert len(stride) == 2,f"Expected stride to be a tuple of length 2"
@@ -113,3 +113,20 @@ def cross_correlation2d(x,kernel,stride=(1,1),padding=0):
             out[:,i,j] = (patch*kernel).sum(axis=(1,2))
     
     return out
+
+
+def correlation2d_backward(x,grad,kernel):
+    #grad of shape (batch_size,out_height,out_width)
+    #kernel of shape (kernel_height,kernel_width)
+    #x is the kernel patches of x
+
+    grad = grad.reshape(grad.shape[0],-1) #(batch_size,out_height*out_width)
+    kernel_grad = np.zeros(1,np.prod(kernel.shape))
+    #kernel_grad of shape (1,kernel_height*kernel_width)
+
+    for patch in x:
+        #patch of shape (batch_size,kernel_height,kernel_width)
+        #(kernel_height*kernel_width,batch_size) @ (batch_size,out_height*out_width)
+        kernel_grad += (patch.reshape(-1,np.prod(kernel.shape)).T @ grad).sum(axis=1)
+
+    return kernel_grad.reshape(kernel.shape)
