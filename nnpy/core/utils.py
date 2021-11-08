@@ -131,6 +131,7 @@ def correlation2d_backward(x,grad,kernel):
             #patch of shape (batch_size,kernel_height,kernel_width)
             #(kernel_height*kernel_width,batch_size) @ (batch_size,out_height*out_width)
             kernel_grad += (patch.reshape(-1,np.prod(kernel.shape)).T @ grad).sum(axis=1)
-            bias_grad += grad.sum(axis=0)
+            
+            bias_grad += grad.sum(axis=1)
 
     return kernel_grad.reshape(kernel.shape),bias_grad
