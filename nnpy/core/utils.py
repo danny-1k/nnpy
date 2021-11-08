@@ -65,7 +65,7 @@ def gen_patches(x,kernel_size,stride=(1,1),padding=0):
     out_h = math.floor(out_h+.5) #rounding to the nearest whole number
     out_w = math.floor(out_w+.5) #rounding to the nearest whole number
 
-    out = np.zeros((x.shape[0],out_h,out_w,*kernel_size))
+    out = np.zeros((x.shape[0],out_h,out_w,*kernel_size)) #(batch_size,out_height,out_width,kernel_height,kernel_width)
 
     for i in range(out_h):
         for j in range(out_w):
@@ -124,9 +124,11 @@ def correlation2d_backward(x,grad,kernel):
     kernel_grad = np.zeros(1,np.prod(kernel.shape))
     #kernel_grad of shape (1,kernel_height*kernel_width)
 
-    for patch in x:
-        #patch of shape (batch_size,kernel_height,kernel_width)
-        #(kernel_height*kernel_width,batch_size) @ (batch_size,out_height*out_width)
-        kernel_grad += (patch.reshape(-1,np.prod(kernel.shape)).T @ grad).sum(axis=1)
+    for out_h in range(x.shape[1]):
+        for out_w in range(x.shape[2]):
+            patch = x[:,out_h,out_w]
+            #patch of shape (batch_size,kernel_height,kernel_width)
+            #(kernel_height*kernel_width,batch_size) @ (batch_size,out_height*out_width)
+            kernel_grad += (patch.reshape(-1,np.prod(kernel.shape)).T @ grad).sum(axis=1)
 
     return kernel_grad.reshape(kernel.shape)
