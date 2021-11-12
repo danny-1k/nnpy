@@ -83,8 +83,6 @@ def gen_patches(x,kernel_size,stride=(1,1),padding=0):
     return out
 
 
-
-
 def correlation2d(x,kernel,stride=(1,1),padding=0):
     #x should be of shape (batch_size,height,width)
     assert len(x.shape) == 3, f"Expected input to be of shape (batch_size,height,width). Got {x.shape} instead"
