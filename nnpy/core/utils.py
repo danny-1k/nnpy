@@ -113,25 +113,3 @@ def correlation2d(x,kernel,stride=(1,1),padding=0):
             out[:,i,j] = (patch*kernel).sum(axis=(1,2))
     
     return out
-
-
-def correlation2d_backward(x,grad,kernel):
-    #grad of shape (batch_size,out_height,out_width)
-    #kernel of shape (kernel_height,kernel_width)
-    #x is the kernel patches of x
-
-    grad = grad.reshape(grad.shape[0],-1) #(batch_size,out_height*out_width)
-    kernel_grad = np.zeros((np.prod(kernel.shape))).astype(np.float64)
-    bias_grad = np.zeros((np.prod(grad.shape[-2])))
-    #kernel_grad of shape (kernel_height*kernel_width)
-    #bias_grad of shape (out_height*out_width)
-    for out_h in range(x.shape[1]):
-        for out_w in range(x.shape[2]):
-            patch = x[:,out_h,out_w]
-            #patch of shape (batch_size,kernel_height,kernel_width)
-            #(kernel_height*kernel_width,batch_size) @ (batch_size,out_height*out_width)
-            kernel_grad += (patch.reshape(-1,np.prod(kernel.shape)).T @ grad).sum(axis=1)
-            
-            bias_grad += grad.sum(axis=1)
-
-    return kernel_grad.reshape(kernel.shape),bias_grad
