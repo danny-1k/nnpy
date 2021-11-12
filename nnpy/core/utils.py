@@ -2,6 +2,10 @@ import math
 import numpy as np
 
 def create_graph(x,layers):
+    #this is the shittiest computational graph maker ever
+    #so fucking dumb
+    #this is the only way I could think of that could work with the
+    #structure of the layers and stuff.
     idx = 0
     g = []
     while True:
