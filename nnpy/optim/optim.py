@@ -72,7 +72,7 @@ class Adagrad(Optim):
                         (self.lr/(np.sqrt(self.val[idx][item])+self.epsilon))
 
 class RMSProp(Optim):
-    def __init__(self, net, lr,beta=.9,epsilon=1e-8):
+    def __init__(self, net, lr=1e-4,beta=.9,epsilon=1e-8):
         self.v = {}
         self.beta = beta
         self.epsilon = epsilon
@@ -86,7 +86,7 @@ class RMSProp(Optim):
                 if not 'x' in layer.grads and not isinstance(layer,Function) :
                     for item in layer.grads:
                         v[item] = np.zeros_like(layer.params[item])
-                self.val[idx] = v
+                self.v[idx] = v
 
         
         for idx,layer in enumerate(self.net.layers):
@@ -97,7 +97,7 @@ class RMSProp(Optim):
         for idx,layer in enumerate(self.net.layers):
             if not 'x' in layer.grads and not isinstance(layer,Function):
                 for item in layer.grads:
-                    self.params[item] -= self.lr/(self.v[idx][item]**.5) * layer.grads[item]
+                    layer.params[item] -= self.lr/((self.v[idx][item]+1e-8)**.5) * layer.grads[item]
 
 
 class Adam(Optim):
