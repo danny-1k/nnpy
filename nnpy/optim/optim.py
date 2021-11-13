@@ -71,7 +71,7 @@ class Adagrad(Optim):
                     layer.params[item] -= layer.grads[item] * \
                         (self.lr/(np.sqrt(self.val[idx][item])+self.epsilon))
 
-class RMSProp(Optim):
+class RMSprop(Optim):
     def __init__(self, net, lr=1e-4,beta=.9,epsilon=1e-8):
         self.v = {}
         self.beta = beta
@@ -138,11 +138,4 @@ class Adam(Optim):
                     v_hat = self.m[idx][item]/(1-pow(self.beta1,self.t))
                     m_hat = self.v[idx][item]/(1-pow(self.beta2,self.t))
 
-                    print(m_hat)
-                    print('m_hat')
-                    print(self.m[idx][item])
-                    print('m')
-                    print(layer.grads[item]**2)
-                    print('Squared grads')
-
-                    layer.params[item] -= self.lr * (v_hat/(np.sqrt(m_hat) + self.epsilon))
+                    layer.params[item] -= self.lr * (v_hat/(np.sqrt(m_hat+self.epsilon)))
