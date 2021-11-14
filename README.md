@@ -208,9 +208,9 @@ class SuperFancyLayer(base.Layer):
 
 ## MNIST demo
 
-train FC model -> `python mnist/trainfc.py`
+train FC model -> `python mnist/trainfc.py` (ps, the model trained got close to 100% accuracy on test data)
 
-test FC model -> `python mnnist/testfc.py`
+test FC model -> `python mnnist/testfc.py` (it tests the model on my hand written digits. Gets about 40%)
 
 ## Sentiment Analysis demo
 coming soon
