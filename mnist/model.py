@@ -14,8 +14,9 @@ class Base:
 
         
         for layer_idx,layer in enumerate(self.layers):
-            for param in layer.params:
-                np.save(f'weights/{save_weights_in}/layeridx_{layer_idx}_param_{param}',layer.params[param])
+            if 'params' in dir(layer):
+                for param in layer.params:
+                    np.save(f'weights/{save_weights_in}/layeridx_{layer_idx}_param_{param}',layer.params[param])
     
     def load_weights(self,save_weights_in):
         if save_weights_in not in os.listdir('weights'):
@@ -23,11 +24,12 @@ class Base:
             os.makedirs(f'weights/{save_weights_in}')
 
         for layer_idx,layer in enumerate(self.layers):
-            for param in layer.param:
-                param_file = f'layeridx_{layer_idx}_param_{param}'
-                if param_file not in os.listdir(f'weights/{save_weights_in}'):
-                    print(f'Param for {param} in layer {layer}({layer_idx}) not found')
-                self.layers[layer_idx][param] = np.load(f'weights/{save_weights_in}/{param_file}')
+            if 'params' in dir(layer):
+                for param in layer.param:
+                    param_file = f'layeridx_{layer_idx}_param_{param}'
+                    if param_file not in os.listdir(f'weights/{save_weights_in}'):
+                        print(f'Param for {param} in layer {layer}({layer_idx}) not found')
+                    self.layers[layer_idx][param] = np.load(f'weights/{save_weights_in}/{param_file}')
 
     
     def train_on(self,optimizer,lossfn,trainloader,testloader,save_weights_in,plots_folder='plots',epochs=10,):
