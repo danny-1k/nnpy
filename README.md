@@ -208,11 +208,8 @@ class SuperFancyLayer(base.Layer):
 
 ## MNIST demo
 
-
-To train the model, run `python mnist/train.py`
-
-
-To test the model,  run `python mnist/test.py` 
+tran FC model -> `python mnist/trainfc.py`
+test FC model -> `python mnnist/testfc.py`
 
 
 ## nnpy
