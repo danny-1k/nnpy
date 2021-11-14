@@ -24,11 +24,11 @@ net = FC()
 train = datasets.MNIST('~', train=True, transform=trans)
 test = datasets.MNIST('~', train=False, transform=trans)
 
-train_loader = DataLoader(train, batch_size=64, shuffle=True)
-test_loader = DataLoader(test, batch_size=64, shuffle=True)
+train_loader = DataLoader(train, batch_size=32, shuffle=True)
+test_loader = DataLoader(test, batch_size=32, shuffle=True)
 
 epochs = 15
-lr = 1e-4
+lr = 1e-5
 
 lossfn = nn.CrossEntropy(net)
 optim = Adam(net,lr=lr)
