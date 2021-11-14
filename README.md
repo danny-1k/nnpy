@@ -208,7 +208,7 @@ class SuperFancyLayer(base.Layer):
 
 ## MNIST demo
 
-tran FC model -> `python mnist/trainfc.py`
+train FC model -> `python mnist/trainfc.py`
 
 test FC model -> `python mnnist/testfc.py`
 
