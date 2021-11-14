@@ -139,4 +139,4 @@ class Adam(Optim):
                     v_corrected = self.v[idx][item]/(1-pow(self.beta2,self.t))
 
 
-                    layer.params[item] -= m_corrected*(self.lr/(pow(v_corrected,.5)+self.epsilon))
+                    layer.params[item] -= self.lr*(m_corrected/(pow(v_corrected,.5)+self.epsilon))
