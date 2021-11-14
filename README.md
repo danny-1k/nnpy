@@ -209,7 +209,14 @@ class SuperFancyLayer(base.Layer):
 ## MNIST demo
 
 tran FC model -> `python mnist/trainfc.py`
+
 test FC model -> `python mnnist/testfc.py`
+
+## Sentiment Analysis demo
+coming soon
+
+## Charrnn demo
+coming soon
 
 
 ## nnpy
