@@ -109,33 +109,34 @@ class Adam(Optim):
         self.m = {}
         self.v = {}
         self.t = 0
-
-        for idx,layer in enumerate(self.net.layers):
-            values = {}
-
-            if not 'x' in layer.grads and not isinstance(layer,Function):
-                for item in layer.grads:
-                    
-                    values[item] = np.zeros_like(layer.params[item])
-
-            self.v[idx] = values
-            self.m[idx] = values
-
     
     def step(self):
         self.t+=1 #increment t
 
+        if self.m == {} and self.v == {}:
+            for idx,layer in enumerate(self.net.layers):
+                m = {}
+                v = {}
+                
+                if not 'x' in layer.grads and not isinstance(layer,Function) :
+                    for item in layer.grads:
+                        m[item] = np.zeros_like(layer.params[item])
+                        v[item] = np.zeros_like(layer.params[item])
+                        
+                self.m[idx] = m
+                self.v[idx] = v
+                
+
         for idx,layer in enumerate(self.net.layers):
 
             if not 'x' in layer.grads and not isinstance(layer,Function):
                 for item in layer.grads:
 
-                    self.v[idx][item] = self.beta1*self.m[idx][item] + (1-self.beta1)*layer.grads[item]
-                    self.m[idx][item] = self.beta2*self.v[idx][item] + (1-self.beta2)*np.square(layer.grads[item])
+                    self.m[idx][item] = self.beta1 * self.m[idx][item] + (1-self.beta1) * layer.grads[item]
+                    self.v[idx][item] = self.beta2 * self.v[idx][item] + (1-self.beta2) * pow(layer.grads[item],2)
 
-                    #bias correction
+                    m_corrected = self.m[idx][item]/(1-pow(self.beta1,self.t))
+                    v_corrected = self.v[idx][item]/(1-pow(self.beta2,self.t))
 
-                    v_hat = self.m[idx][item]/(1-pow(self.beta1,self.t))
-                    m_hat = self.v[idx][item]/(1-pow(self.beta2,self.t))
 
-                    layer.params[item] -= self.lr * (v_hat/(np.sqrt(m_hat+self.epsilon)))
+                    layer.params[item] -= m_corrected*(self.lr/(pow(v_corrected,.5)+self.epsilon))
