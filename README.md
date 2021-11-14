@@ -260,6 +260,9 @@ To test the model,  run `python mnist/test.py`
 ## nnpy.optim.optim
 - SGD
 - Adagrad
+- Adam
+- RMSprop
+- 
 
 ## TODO
 - [ ] Adam optimizer
