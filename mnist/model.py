@@ -30,7 +30,7 @@ class Base:
                 self.layers[layer_idx][param] = np.load(f'weights/{save_weights_in}/{param_file}')
 
     
-    def train_(self,optimizer,lossfn,trainloader,testloader,save_weights_in,plots_folder='plots',epochs=10,):
+    def train_on(self,optimizer,lossfn,trainloader,testloader,save_weights_in,plots_folder='plots',epochs=10,):
         
         test_loss_over_time = []
         train_loss_over_time = []
