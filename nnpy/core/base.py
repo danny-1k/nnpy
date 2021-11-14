@@ -51,7 +51,9 @@ class Function:
         '''
         Performs self.func on x
         '''
-        return self.func(x)
+        self.x = x
+        self.out = self.func(x)
+        return self.out
 
     def func(self,x):
         '''
