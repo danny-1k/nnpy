@@ -86,17 +86,17 @@ class Base:
                 self.save_weights(save_weights_in)
 
 
-            plt.plot(train_loss_over_time,legend='train')
-            plt.plot(test_loss_over_time,legend='test')
+            plt.plot(train_loss_over_time,label='train')
+            plt.plot(test_loss_over_time,label='test')
 
             plt.legend()
 
-            plt.savefig(os.path.join(self.plots_folder,'loss.png'))
+            plt.savefig(os.path.join(plots_folder,'loss.png'))
             
             plt.close('all')
 
 
-            plt.plot(acc_over_time,legend='accuracy')
+            plt.plot(acc_over_time,label='accuracy')
 
             plt.legend()
 
