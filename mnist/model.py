@@ -122,14 +122,14 @@ class FC(nn.Module,Base):
         self.fc3 = nn.Linear(64,10)
         self.soft = nn.Softmax()
 
-        self.drop = nn.Dropout(.3)
+        #self.drop = nn.Dropout(.3)
 
 
     def forward(self,x):
         x = self.fc1(x)
         x = self.relu1(x)
         
-        x = self.drop(x)
+        #x = self.drop(x)
 
         x = self.fc2(x)
         x = self.relu2(x)
