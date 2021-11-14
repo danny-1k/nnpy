@@ -1,6 +1,1 @@
-nn.py
-nnpy/__pycache__/*
-nnpy/nn/__pycache__/*
-nnpy/optim/__pycache__/*
-nnpy/core/__pycache__/*
-mnist/__pycache__/*
+__pycache__
