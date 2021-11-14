@@ -23,13 +23,17 @@ class Base:
             print('Weights folder does not exist. Creating')
             os.makedirs(f'weights/{save_weights_in}')
 
+        self.__call__(np.zeros((1,28*28))) #create graph of layers
+
         for layer_idx,layer in enumerate(self.layers):
             if 'params' in dir(layer):
-                for param in layer.param:
-                    param_file = f'layeridx_{layer_idx}_param_{param}'
+                for param in layer.params:
+                    param_file = f'layeridx_{layer_idx}_param_{param}.npy'
                     if param_file not in os.listdir(f'weights/{save_weights_in}'):
                         print(f'Param for {param} in layer {layer}({layer_idx}) not found')
-                    self.layers[layer_idx][param] = np.load(f'weights/{save_weights_in}/{param_file}')
+                        continue
+                
+                    self.layers[layer_idx].params[param] = np.load(f'weights/{save_weights_in}/{param_file}')
 
     
     def train_on(self,optimizer,lossfn,trainloader,testloader,save_weights_in,plots_folder='plots',epochs=10,):
