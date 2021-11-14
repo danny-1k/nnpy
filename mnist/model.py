@@ -1,5 +1,4 @@
 import os
-from posix import listdir
 import numpy as np
 import nnpy.nn as nn
 
