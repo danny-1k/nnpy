@@ -38,5 +38,6 @@ net.train_on(optimizer=optim,
         trainloader=train_loader,
         testloader = test_loader,
         save_weights_in='FC',
+        plots_folder='plots/FC',
         epochs = epochs,
 )
