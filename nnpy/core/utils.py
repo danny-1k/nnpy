@@ -53,6 +53,11 @@ def add_padding(x,padding=0):
 
 
 def gen_patches(x,kernel_size,stride=(1,1),padding=0):
+    '''
+    Returns the patches for convolution of the input
+    the output is of shape (in_channels,out_h,out_w,kernel_h,kernel_w)
+    '''
+
     #x should be of shape (batch_size,height,width)
     assert len(x.shape) == 3, f"Expected input to be of shape (batch_size,height,width). Got {x.shape} instead"
     assert len(stride) == 2,f"Expected stride to be a tuple of length 2"
