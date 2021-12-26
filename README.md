@@ -266,7 +266,6 @@ coming soon
 - Adagrad
 - Adam
 - RMSprop
-- 
 
 ## TODO
 - [ ] CNN
