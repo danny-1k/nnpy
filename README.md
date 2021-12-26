@@ -148,7 +148,7 @@ class Net(nn.Module):
         self.fc3 = nn.Linear(4,1)
         self.relu1 = nn.ReLU(),
         self.relu2 = nn.ReLU()
-        self.sig = nn.ReLU()
+        self.sig = nn.Sigmoid()
 
 
 
