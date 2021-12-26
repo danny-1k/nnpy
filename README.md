@@ -269,6 +269,5 @@ coming soon
 - 
 
 ## TODO
-- [ ] Adam optimizer
 - [ ] CNN
 - [ ] LSTM
