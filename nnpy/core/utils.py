@@ -35,21 +35,13 @@ def create_graph(x,layers):
 
 
 def add_padding(x,padding=0):
+    shape = np.array(x.shape)
+    shape[-2:] += 2*padding
+    out = np.zeros((x.shape[0],x.shape[1],x.shape[2]+(2*padding),x.shape[3]+(2*padding)))
 
-    original_shape = x.shape #x should be of shape (batch_size,height,width)
+    out[:,:,padding:x.shape[2]+padding,padding:x.shape[3]+padding] = x
     
-    assert len(original_shape) == 3, f"Expected input to be of shape (batch_size,height,width). Got {original_shape} instead"
-
-
-    for i in range(padding):
-        x = np.insert(x,0,np.zeros((x.shape[0],x.shape[-1])),axis=1)#zeros on the top
-        x = np.insert(x,0,np.zeros((x.shape[0],x.shape[-1])),axis=2)#zeros on the left
-        
-        x = np.insert(x,x.shape[-1],np.zeros((x.shape[0],original_shape[-1])),axis=2)#zeros on the right
-        x = np.insert(x,original_shape[-1],np.zeros((x.shape[0],x.shape[-1])),axis=1)#zeros on the bottom
-        original_shape = x.shape
-
-    return x
+    return out
 
 
 def gen_patches(x,kernel_size,stride=(1,1),padding=0):
