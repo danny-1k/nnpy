@@ -12,7 +12,7 @@ class StepWiseDecay(LRScheduler):
         self.min_lr = min_lr
 
     def reduce_lr(self, lr):
-        if (self.iter % self.step_size) == 0:
+        if ((self.iter+1) % self.step_size) == 0:
             lr = self.optimizer.lr * self.gamma
             if lr < self.min_lr:
                 lr = self.min_lr    
