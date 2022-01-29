@@ -3,6 +3,8 @@ from ..core.base import Layer,Function
 from ..core.utils import create_graph
 from .activations import Tanh,Softmax
 
+import pickle
+
 class Linear(Layer):
     def __init__(self,in_,out_):
         super().__init__()
@@ -92,6 +94,31 @@ class Sequential(Layer):
             if isinstance(layer,Function):
                 layer.eval = False
 
+
+    def return_state_dict(self,):
+        state_dict = {}
+
+        for idx,layer in enumerate(self.layers):
+            state_dict[idx] = layer.return_state_dict()
+
+        return state_dict
+
+
+    def load_state_dict(self, state_dict):
+        
+        for idx,layer in enumerate(self.layers):
+            try:
+                layer.load_state_dict(state_dict[idx])
+
+            except Exception as e:
+                print(f'Error occured in loading state dict : {e}')
+
+    
+    def save_state_dict(self,f):
+        pickle.dump(self.return_state_dict(),open(f,'wb'))
+
+
+
 class Module(Layer):
 
 
@@ -149,6 +176,44 @@ class Module(Layer):
         for layer in self.layers:
             if isinstance(layer,Function):
                 layer.eval = False
+
+
+    def return_state_dict(self,):
+
+        if 'layers' not in dir(self):
+            print('Net has not been initialized.')
+            print('Initialize by passing in dummy data into it.')
+
+            return
+
+        state_dict = {}
+
+        for idx,layer in enumerate(self.layers):
+            state_dict[idx] = layer.return_state_dict()
+
+        return state_dict
+
+
+    def load_state_dict(self, state_dict):
+
+        if 'layers' not in dir(self):
+            print('Net has not been initialized.')
+            print('Initialize by passing in dummy data into it.')
+
+            return
+
+        
+        for idx,layer in enumerate(self.layers):
+            try:
+                layer.load_state_dict(state_dict[idx])
+
+            except Exception as e:
+                print(f'Error occured in loading state dict : {e}')
+
+
+        
+    def save_state_dict(self,f):
+        pickle.dump(self.return_state_dict(),open(f,'wb'))
 
 
     def __call__(self, *args,**kwargs):
