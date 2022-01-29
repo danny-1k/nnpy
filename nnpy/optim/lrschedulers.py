@@ -34,9 +34,11 @@ class ReduceOnPlateau(LRScheduler):
 
     def reduce_lr(self, lr):
         if len(self.loss_history) == self.patience and not(self.loss_history[-1] < self.loss_history[0]):
+            lr = self.optimizer.lr * self.gamma
+
             if lr < self.min_lr:
                 lr = self.min_lr   
-            lr = self.optimizer.lr * self.gamma
+            
             self.set_lr(lr)
             self.loss_history = []
         self.loss_history.append(self.loss_class.out)
