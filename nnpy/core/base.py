@@ -1,4 +1,5 @@
 import numpy as np
+import pickle
 
 class Layer:
     '''
@@ -21,6 +22,29 @@ class Layer:
         the gradients of the parameters
         '''
         pass
+
+
+    def return_state_dict(self,):
+        state_dict = {}
+        
+        if 'params' in dir(self):
+            state_dict['params'] = self.params
+
+        return state_dict
+
+
+    def load_state_dict(self,state_dict):
+        for key in state_dict:
+            if key in dir(self):
+                self.__setattr__(key,state_dict[key])
+            
+            else:
+                raise ValueError(f'{key} is not an attribute of this object.')
+
+
+    def save_state_dict(self,f):
+        pickle.dump(self.return_state_dict(),open(f,'wb'))
+
 
     def __call__(self,*args,**kwargs):
         self.args = args
@@ -66,6 +90,21 @@ class Function:
 
     def __repr__(self):
         return f'{type(self).__name__}()'
+
+
+    def return_state_dict(self,):
+        return {}
+
+
+    def load_state_dict(self,state_dict):
+        for key in state_dict:
+            if key in dir(self):
+                self.__setattr__(key,state_dict[key])
+            else:
+                raise ValueError(f'{key} is not an attribute of this object.')
+
+    def save_state_dict(self,f):
+        pickle.dump(self.return_state_dict(),open(f,'wb'))
 
 
 class Activation(Layer):
@@ -125,6 +164,20 @@ class Optim:
                 layer.zero_grad()
 
 
+    def return_state_dict(self,):
+        state_dict = {}
+        
+        if 'params' in dir(self):
+            state_dict['params'] = self.params
+
+        return state_dict
+
+    
+    def load_state_dict(self,state_dict):
+        for key in state_dict:
+            self.__setattr__(key,state_dict[key])
+
+
 class LRScheduler:
     def __init__(self, optimizer):
         self.optimizer = optimizer
@@ -142,3 +195,19 @@ class LRScheduler:
         '''
         self.reduce_lr(self.optimizer.lr)
         self.iter += 1
+
+    
+    def return_state_dict(self,):
+        state_dict = {}
+        
+        if 'params' in dir(self):
+            state_dict['params'] = self.params
+
+        if 'iter' in dir(self):
+            state_dict['iter'] = self.iter
+
+        if 'lr' in dir(self):
+            state_dict['lr'] = self.lr
+
+
+        return state_dict
