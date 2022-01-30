@@ -9,6 +9,7 @@ class Layer:
         self.out = None
         self.grads = {}
         self.x = None
+        self.eval = False
     def forward(self,*args,**kwargs):
         '''
         Forward method to push inputs through a computation
