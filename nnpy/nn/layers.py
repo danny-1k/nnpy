@@ -160,7 +160,7 @@ class Module(Layer):
             return
 
         for layer in self.layers:
-            if isinstance(layer,Function):
+            if 'eval' in dir(layer):
                 layer.eval = True
 
 
@@ -174,7 +174,7 @@ class Module(Layer):
 
 
         for layer in self.layers:
-            if isinstance(layer,Function):
+            if 'eval' in dir(layer):
                 layer.eval = False
 
 
@@ -430,3 +430,75 @@ class Reshape(Layer):
 
     def step(self,lr):
         pass
+
+
+
+class BatchNorm(Layer):
+    def __init__(self,epsilon=1e-8,momentum=.99):
+        super().__init__()
+
+        self.epsilon = epsilon
+        self.momentum = momentum
+
+        self.params = {
+            'gamma':None,
+            'beta':None,
+            'estimated_mu':0,
+            'estimated_std':0,
+        }
+
+        
+        self.grads = {
+            'gamma':np.zeros_like(self.params['gamma']),
+            'beta':np.zeros_like(self.params['beta']),
+        }
+
+
+    def build(self,input_shape):
+        self.params['gamma'] = np.ones(input_shape)
+        self.params['beta'] = np.zeros(input_shape)
+
+
+        self.grads = {
+            'gamma':np.zeros_like(self.params['gamma']),
+            'beta':np.zeros_like(self.params['beta']),
+        }
+
+
+    def forward(self,x):
+
+        if type(self.params['gamma']) == type(None):
+            self.build(x.shape)
+
+        if self.eval == False:
+
+            mu = np.mean(x,axis=0)
+            std = (np.var(x,axis=0)+self.epsilon)**.5
+
+            self.params['estimated_mu'] = self.momentum*self.params['estimated_mu'] + (1-self.momentum)*mu
+            self.params['estimated_std'] = self.momentum*self.params['estimated_std'] + (1-self.momentum)*std
+        
+        else:
+            mu = self.params['estimated_mu']
+            std = self.params['estimated_std'] 
+
+        self.x = x
+
+        self.x_bar = (x - mu)/std
+
+        self.x_bar = self.params['gamma'] * x  + self.params['beta']
+
+        return self.x_bar
+
+
+    def backward(self,grad):
+
+        self.grads['gamma'] += grad*self.x_bar
+        self.grads['beta'] += grad
+
+        return grad*self.params['gamma']
+
+
+    def step(self, lr):
+        for item in self.grads:
+            self.params[item] -= lr*self.grads[item]
